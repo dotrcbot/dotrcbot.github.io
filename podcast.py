@@ -42,7 +42,7 @@ for file in sorted(os.listdir()):
         length = str(audio.info.length)
         
         xmlfile += "<item>\n"
-        # xmlfile += "<link>https://dotrcbot.github.io/</link>\n"
+        xmlfile += "<link>https://dotrcbot.github.io/</link>\n"
         xmlfile += "<title>{}</title>\n".format(file.split('.m4a')[0])
         xmlfile += "<description>{}</description>\n".format(file.split('.')[1].split('.')[0])
         xmlfile += "<pubDate>Sun, 29 Nov 2020 20:00:01</pubDate>\n"
@@ -58,6 +58,3 @@ xmlfile += '''</channel>
 
 with open('../feed.xml', 'w') as feed:
     feed.write(xmlfile)
-
-# print(xmlfile)
-
