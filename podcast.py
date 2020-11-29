@@ -1,6 +1,8 @@
 import os
 from mutagen.mp4 import MP4
 
+os.chdir("audio/")
+
 xmlfile = '''<?xml version="1.0" encoding="UTF-8"?>
 <rss xmlns:content="http://purl.org/rss/1.0/modules/content/"
     xmlns:wfw="http://wellformedweb.org/CommentAPI/"
@@ -32,8 +34,6 @@ xmlfile = '''<?xml version="1.0" encoding="UTF-8"?>
         <itunes:explicit>no</itunes:explicit>
 '''
 
-os.chdir("audio/")
-
 for file in sorted(os.listdir()):
     if file.endswith('.m4a'):
         statinfo = os.stat(file)
@@ -42,12 +42,14 @@ for file in sorted(os.listdir()):
         length = str(audio.info.length)
         
         xmlfile += "<item>\n"
-        xmlfile += "<link>https://dotrcbot.github.io/</link>\n"
+        # xmlfile += "<link>https://dotrcbot.github.io/</link>\n"
         xmlfile += "<title>{}</title>\n".format(file.split('.m4a')[0])
-        xmlfile += "<enclosure url='https://dotrcbot.github.io/audio/{}' length='{}' type='audio/mpeg'/>\n".format(file,size)
+        xmlfile += "<description>{}</description>\n".format(file.split('.')[1].split('.')[0])
+        xmlfile += "<pubDate>Sun, 29 Nov 2020 20:00:01</pubDate>\n"
         xmlfile += '<itunes:image href="https://dotrcbot.github.io/cover.webp"/>\n'
         xmlfile += "<itunes:duration>{}</itunes:duration>\n".format(length)
         xmlfile += "<guid isPermaLink='false'>https://dotrcbot.github.io/audio/{}</guid>\n".format(file)
+        xmlfile += "<enclosure url='https://dotrcbot.github.io/audio/{}' length='{}' type='audio/mpeg'/>\n".format(file,size)
         xmlfile += "</item>\n"
 
 xmlfile += '''</channel>
@@ -57,6 +59,5 @@ xmlfile += '''</channel>
 with open('../feed.xml', 'w') as feed:
     feed.write(xmlfile)
 
-
-print(xmlfile)
+# print(xmlfile)
 
