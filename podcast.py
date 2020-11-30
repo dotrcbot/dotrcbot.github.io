@@ -1,4 +1,6 @@
 import os
+from datetime import datetime, timedelta
+import calendar
 from mutagen.mp4 import MP4
 
 os.chdir("audio/")
@@ -34,23 +36,31 @@ xmlfile = '''<?xml version="1.0" encoding="UTF-8"?>
         <itunes:explicit>no</itunes:explicit>
 '''
 
+COUNTDOWN = 160
+
 for file in sorted(os.listdir()):
+
+    pubDate = datetime.today() - timedelta(days=COUNTDOWN)
+
     if file.endswith('.m4a'):
         statinfo = os.stat(file)
         size = str(statinfo.st_size)
         audio = MP4(file)
         length = str(audio.info.length)
-        
+
         xmlfile += "<item>\n"
         xmlfile += "<link>https://dotrcbot.github.io/</link>\n"
         xmlfile += "<title>{}</title>\n".format(file.split('.m4a')[0])
         xmlfile += "<description>{}</description>\n".format(file.split('.')[1].split('.')[0])
-        xmlfile += "<pubDate>Sun, 29 Nov 2020 20:00:01</pubDate>\n"
+        # xmlfile += "<pubDate>Sun, 29 Nov 2020 20:00:01</pubDate>\n"
+        xmlfile += "<pubDate>{}, {} {} 2020 20:00:00</pubDate>\n".format(str(pubDate.strftime('%A')[:3]), str(pubDate.strftime('%d')[:3]), str(pubDate.strftime('%B')[:3]))
         xmlfile += '<itunes:image href="https://dotrcbot.github.io/cover.webp"/>\n'
         xmlfile += "<itunes:duration>{}</itunes:duration>\n".format(length)
         xmlfile += "<guid isPermaLink='false'>https://dotrcbot.github.io/audio/{}</guid>\n".format(file)
         xmlfile += "<enclosure url='https://dotrcbot.github.io/audio/{}' length='{}' type='audio/mpeg'/>\n".format(file,size)
         xmlfile += "</item>\n"
+    
+    COUNTDOWN -= 1
 
 xmlfile += '''</channel>
 </rss>
